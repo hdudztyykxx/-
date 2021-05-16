@@ -1,0 +1,46 @@
+#include<stdio.h>
+#include<math.h>
+#include<easyx.h>
+
+#define MAX_COUNTRY 100		//最大国家数量
+#define WORLD_SIZE 80		//世界大小
+
+//敌对国家
+typedef struct hostile_states
+{
+	int country_code;	//国家编号
+	struct hostile_states* next;
+}Hostile_states;
+
+//下辖省份
+typedef struct province
+{
+	int x,y;	//省份位置
+	int isborder;	//是否为边界省：1为边界省，0不为边界省
+	int war_resource;	//战争资源（税收、人口）
+	double war_probability;		//挑起战争概率
+	struct province* next;
+}Province;
+
+//国家
+typedef struct country
+{
+	Hostile_states* hostile_list;	//与其处于战争状态的国家为敌对国家，若没有敌对国家，则为和平状态
+	int area;	//国家面积
+	int war_resource;	//国家战争资源
+	Province* province;	//下辖非边界省份;
+	Province* border_province;//下辖边界省份
+	struct country* next;
+}Country;
+
+//战争报告
+typedef struct war
+{
+	int code;	//战争编号
+	int scale;	//战争规模-参战省份数量
+	int coutry_number;	//参战国家数量
+	int coutry_list[MAX_COUNTRY];	//参战国家编号
+	struct war* list;
+}War;
+
+int map[WORLD_SIZE][WORLD_SIZE];	//一份世界地图，一个二维数组单元表示一个省份，数组内为该省份所属国家的编号
